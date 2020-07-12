@@ -31,7 +31,25 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <style>
         body {
-            background-color: rgb(230, 230, 230);
+            background-color: rgb(220, 220, 220);
+        }
+
+        @media (min-width: 576px) {
+            .card-columns {
+                column-count: 1
+            }
+        }
+
+        @media (min-width: 768px) {
+            .card-columns {
+                column-count: 2
+            }
+        }
+
+        @media (min-width: 992px) {
+            .card-columns {
+                column-count: 3
+            }
         }
 
         .ellipsisMask {
@@ -71,21 +89,27 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">☆</span>
                     </div>
-                    <input type="text" class="form-control col-md-6  col-sm" placeholder="Keyword" aria-label="Username" aria-describedby="basic-addon1" v-model="searchText">
+                    <input type="text" class="form-control col-md-6  col-sm" placeholder="Keyword" aria-label="Username"
+                        aria-describedby="basic-addon1" v-model="searchText">
                 </div>
+                <button type="button" class="btn  btn-info btn-sm mr-2" @click="saveDataLocalhost">儲存</button>
+                <!-- <button type="button" class="btn  btn-info btn-sm mr-2" @click="loadDataLocalhost">儲存</button> -->
                 <button type="button" class="btn  btn-outline-info btn-sm mr-2" @click="exportData">匯出</button>
                 <button type="button" class="btn  btn-outline-info btn-sm mr-2" @click="importData">匯入</button>
-                <button type="button" class="btn btn-info rounded-circle" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-info rounded-circle" data-toggle="modal"
+                    data-target="#exampleModal">
                     <h5>＋</h5>
                 </button>
             </div>
             <div class="card-columns">
-                <card-component class="shadow-sm" :card-data="bookList[i]" v-for="(item, i) in bookList.length" :key="item"></card-component>
+                <card-component :card-data="bookList[i]" v-for="(item, i) in bookList.length" :key="item">
+                </card-component>
             </div>
         </div>
 
-        <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!-- Card Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -95,25 +119,31 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <input class="h2 w-100" type="text" v-model="newCardData.Title" placeholder="輸入標題...">
+                                    <input class="h2 w-100" type="text" v-model="newCardData.Title"
+                                        placeholder="輸入標題...">
                                 </div>
                                 <div class="ml-auto">
-                                    <span style="cursor:pointer" @click="changeFavorite" v-if="!newCardData.MyFavorite" class="text-decoration-none h5">☆</span>
-                                    <span style="cursor:pointer" @click="changeFavorite" v-if="newCardData.MyFavorite" class="text-decoration-none h5">★</span>
+                                    <span style="cursor:pointer" @click="changeFavorite" v-if="!newCardData.MyFavorite"
+                                        class="text-decoration-none h5">☆</span>
+                                    <span style="cursor:pointer" @click="changeFavorite" v-if="newCardData.MyFavorite"
+                                        class="text-decoration-none h5">★</span>
                                 </div>
                             </div>
                             <div>
                                 <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>
-                                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Tags">
+                                <input type="text" class="form-control" aria-label="Sizing example input"
+                                    aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Tags">
                             </div>
                             <div>
-                                <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-model="newCardData.Content" placeholder="添加描述..."></textarea>
+                                <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4"
+                                    v-model="newCardData.Content" placeholder="添加描述..."></textarea>
                             </div>
                             <div class="input-group input-group-sm mb-3 mt-2" v-for="j in newCardData.Link.length + 1">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-sm">連結{{j}}</span>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Link[j-1]">
+                                <input type="text" class="form-control" aria-label="Sizing example input"
+                                    aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Link[j-1]">
                             </div>
                         </div>
                     </div>
@@ -124,65 +154,83 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <script type="text/x-template" id="cardComponentTemplate">
-        <div class="card">
-            <div class="card-body">
-                <!-- Title -->
-                <div class="d-flex">
+        <div>
+            <div class="card">
+                <div class="card-body shadow-sm">
+                    <!-- Title -->
+                    <div class="d-flex">
+                        <div>
+                            <h2 v-if="!editMode" class="card-title">{{cardData.Title}}</h2>
+                            <input class="h2 w-100 border shadow-sm p-2" v-if="editMode" type="text" v-model="cardData.Title">
+                        </div>
+                        <div class="ml-auto" v-if="!editMode">
+                            <span style="cursor:pointer" @click="changeFavorite" v-if="!cardData.MyFavorite" class="text-decoration-none h5">☆</span>
+                            <span style="cursor:pointer" @click="changeFavorite" v-if="cardData.MyFavorite" class="text-decoration-none h5">★</span>
+                        </div>
+                    </div>
+                    <!-- Tags -->
                     <div>
-                        <h2 v-if="!editMode" class="card-title">{{cardData.Title}}</h2>
-                        <input class="h2 w-100" v-if="editMode" type="text" v-model="cardData.Title">
+                        <span class="badge badge-info mr-1" v-if="!editMode"
+                            v-for="j in cardData.Tags.length">{{cardData.Tags[j-1]}}</span>
+                        <div v-if="editMode">
+                            <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>
+                            <input type="text" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-sm" v-model="Tags">
+                        </div>
                     </div>
-                    <div class="ml-auto" v-if="!editMode">
-                        <span style="cursor:pointer" @click="changeFavorite" v-if="!cardData.MyFavorite" class="text-decoration-none h5">☆</span>
-                        <span style="cursor:pointer" @click="changeFavorite" v-if="cardData.MyFavorite" class="text-decoration-none h5">★</span>
+                    <!-- Content -->
+                    <div>
+                        <div :class="{'ellipsis':isEllipsis }" v-if="!editMode && cardData.Content != ''">
+                            <p class="card-text w-100">
+                                {{cardData.Content}}
+                            </p>
+                            <div :class="{'ellipsisMask':isEllipsis }"></div>
+                        </div>
+                        <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-if="editMode" v-model="cardData.Content" placeholder="添加描述..."></textarea>
                     </div>
-                </div>
-                <!-- Tags -->
-                <div>
-                    <span class="badge badge-info mr-1" v-if="!editMode"
-                        v-for="j in cardData.Tags.length">{{cardData.Tags[j-1]}}</span>
-                    <div v-if="editMode">
-                        <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>
-                        <input type="text" class="form-control" aria-label="Sizing example input"
-                            aria-describedby="inputGroup-sizing-sm" v-model="Tags">
+                    <!-- Link -->
+                    <a v-if="!editMode" class="mr-2 text-info" :href="cardData.Link[j-1]" target="_blank"
+                        v-for="j in cardData.Link.length"><small>連結{{j}}</small></a>
+                    <div class="input-group input-group-sm mb-3 mt-2" v-if="editMode" v-for="j in cardData.Link.length + 1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="inputGroup-sizing-sm">連結{{j}}</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="cardData.Link[j-1]">
                     </div>
-                </div>
-                <!-- Content -->
-                <div>
-                    <div :class="{'ellipsis':isEllipsis }" v-if="!editMode && cardData.Content != ''">
-                        <p class="card-text w-100">
-                            {{cardData.Content}}
-                        </p>
-                        <div :class="{'ellipsisMask':isEllipsis }"></div>
-                    </div>
-                    <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-if="editMode" v-model="cardData.Content" placeholder="添加描述..."></textarea>
-                </div>
-                <!-- Link -->
-                <a v-if="!editMode" class="mr-2 text-info" :href="cardData.Link[j-1]" target="_blank"
-                    v-for="j in cardData.Link.length"><small>連結{{j}}</small></a>
-                <div class="input-group input-group-sm mb-3 mt-2" v-if="editMode" v-for="j in cardData.Link.length + 1">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="inputGroup-sizing-sm">連結{{j}}</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="cardData.Link[j-1]">
-                </div>
-                <!-- Footer -->
-                <footer class="footer">
-                    <small class="text-muted" v-if="!editMode">
-                        Last updated<cite title="Source Title"> {{lastUpdatedTime}}</cite>
-                    </small>
-                </footer>
-                <div class="d-flex">
-                    <div class="ml-auto">
-                        <a v-if="!editMode" href="#" @click.prevent="deleteCard"><small class="text-danger">刪除</small></a>
-                        <a class="ml-auto" v-if="!editMode" href="#" @click.prevent="turnToEdit"><small class="text-muted">編輯</small></a>
-                    </div>
-                    <a class=" ml-auto" v-if="editMode" href="#" @click.prevent="doneEdit"><small class="text-info">更新</small></a>
+                    <!-- Footer -->
+                    <footer class="footer">
+                        <div class="d-flex align-items-end">
+                            <small class="text-muted" v-if="!editMode">
+                             Last updated <cite title="Source Title"> {{lastUpdatedTime}}</cite>
+                            </small>
+                            <div class="ml-auto">
+                                <a v-if="!editMode" href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><small class="text-danger" >刪除</small></a>
+                                <a class="ml-auto" v-if="!editMode" href="#" @click.prevent="turnToEdit"><small class="text-muted">編輯</small></a>
+                            </div>
+                            <a class=" ml-auto" v-if="editMode" href="#" @click.prevent="doneEdit"><small class="text-info">更新</small></a>
+                        </div>
+                    </footer>
                 </div>
             </div>
+                <!-- Delete modal -->
+            <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header bg-danger text-white justify-content-center">
+                            <h5 class="modal-title" id="mySmallModalLabel">確認刪除卡片？</h5>
+                        </div>
+                        <div class="modal-footer  justify-content-center">
+                            <button type="button" class="btn btn-outline-danger mr-4" data-dismiss="modal">取消</button>
+                            <button type="button" @click.prevent="deleteCard" class="btn btn-danger" data-dismiss="modal">確認</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
         </div>
     </script>
 
@@ -219,12 +267,13 @@
                     this.lastUpdatedTime = (new Date).toLocaleDateString() + (new Date).toLocaleTimeString();
                     this.isEllipsis = this.cardData.Content.length > this.$root.$data.cardContentLimit;
                     this.cardData.Tags = this.Tags.split(',');
+                    this.$root.saveDataLocalhost();
                 },
                 changeFavorite: function () {
                     this.cardData.MyFavorite = !this.cardData.MyFavorite;
                 },
                 deleteCard: function () {
-                    console.log(this.$root.$data.bookList);
+                    // console.log(this.$root.$data.bookList);
                     var index = this.$vnode.data.key - 1;
                     console.log(index);
                     this.$root.$data.bookList.splice(index, 1);
@@ -248,53 +297,61 @@
             }
         })
 
-        var testLongContent =
-            `察覺能與不能之事，
-            對所能之事盡力而為，
-            對不能之事寬心以待。
+        // var testLongContent =
+        //     `察覺能與不能之事，
+        //     對所能之事盡力而為，
+        //     對不能之事寬心以待。
 
-            對於這本書，這是我總結出來的心得。短短三句話，乍看很有道理，但也太有道理而讓人覺得是輕飄飄的空話。道理要懂很簡單，要打從心裡認同並實踐才是最困難的。
+        //     對於這本書，這是我總結出來的心得。短短三句話，乍看很有道理，但也太有道理而讓人覺得是輕飄飄的空話。道理要懂很簡單，要打從心裡認同並實踐才是最困難的。
 
-            在讀這本書之前，雖然曾經聽過一些這個學派創始人芝諾的名言和軼事，卻從未聽過斯多葛哲學。
+        //     在讀這本書之前，雖然曾經聽過一些這個學派創始人芝諾的名言和軼事，卻從未聽過斯多葛哲學。
 
-            斯多葛哲學算是歷史上「很受歡迎」的學說，擁有不少追隨者皆是君王與名士。要追究原因，我想是因為斯多葛追求精神價值的同時，並不否認物質價值。
+        //     斯多葛哲學算是歷史上「很受歡迎」的學說，擁有不少追隨者皆是君王與名士。要追究原因，我想是因為斯多葛追求精神價值的同時，並不否認物質價值。
 
-            許多道德觀念在大部分人眼中看來遙不可及，因此無法產生任何共鳴，也產生不了想要相信與實踐的動力。哲人告訴我們要追求高潔的品格、要修身養性、培養應有的美德，這些道理講起來都懂，但與人性過於脫節，最後變得望而生畏。
+        //     許多道德觀念在大部分人眼中看來遙不可及，因此無法產生任何共鳴，也產生不了想要相信與實踐的動力。哲人告訴我們要追求高潔的品格、要修身養性、培養應有的美德，這些道理講起來都懂，但與人性過於脫節，最後變得望而生畏。
 
-            如果要拿斯多葛哲學來解釋這件事，首先可以區分出一個概念。斯多葛學派喜愛德行，認為人應該盡可能地去追求德行，且將其視為對人來說最為重要的東西。
+        //     如果要拿斯多葛哲學來解釋這件事，首先可以區分出一個概念。斯多葛學派喜愛德行，認為人應該盡可能地去追求德行，且將其視為對人來說最為重要的東西。
 
-            而像是金錢、名譽、地位這樣的東西，則是「喜歡但沒有也無所謂」的事物，斯多葛學派不拒絕物質，但並不視為人生的主要追求。
+        //     而像是金錢、名譽、地位這樣的東西，則是「喜歡但沒有也無所謂」的事物，斯多葛學派不拒絕物質，但並不視為人生的主要追求。
 
-            另外，斯多葛哲學另一個出名之處則是對人生困境的看法。斯多葛著名代表思想家愛比克泰德曾經為奴、且據說因受到主人施虐而大半生都跛腳。據說他在奴隸期間聽到斯多葛學派的教師講學，開啟思想家的起始之路，而他在成為自由人後也建立了自己的學派。
+        //     另外，斯多葛哲學另一個出名之處則是對人生困境的看法。斯多葛著名代表思想家愛比克泰德曾經為奴、且據說因受到主人施虐而大半生都跛腳。據說他在奴隸期間聽到斯多葛學派的教師講學，開啟思想家的起始之路，而他在成為自由人後也建立了自己的學派。
 
-            擁有這些經歷的他，對人生困境有著自己一番獨特看法。愛比克泰德相當有名的一句話是：「人們的困擾不是來自事情的本身，而是來自他們對事情的看法。」
+        //     擁有這些經歷的他，對人生困境有著自己一番獨特看法。愛比克泰德相當有名的一句話是：「人們的困擾不是來自事情的本身，而是來自他們對事情的看法。」
 
-            他認為，與德行和物質享樂這些事情相比，人生的困境比方說成為奴隸或者斷腿等遭遇，是「不喜歡但無所謂的事情」。因為這些都是外在環境使然，與他自身的思考無關、也不損及人格與品行。
+        //     他認為，與德行和物質享樂這些事情相比，人生的困境比方說成為奴隸或者斷腿等遭遇，是「不喜歡但無所謂的事情」。因為這些都是外在環境使然，與他自身的思考無關、也不損及人格與品行。
 
-            愛比克泰德對於自身的遭遇，既不怨天尤人也從未自暴自棄。在他看來，如果是自身無法改變的事情，就像接受風雨一樣接受就好。我們不需要對著風雨憤怒大吼、不需要怨憤或指責，而是在風雨來襲的時候保持堅韌、並守住內心的寧靜，默默等待風雨過去就好。
+        //     愛比克泰德對於自身的遭遇，既不怨天尤人也從未自暴自棄。在他看來，如果是自身無法改變的事情，就像接受風雨一樣接受就好。我們不需要對著風雨憤怒大吼、不需要怨憤或指責，而是在風雨來襲的時候保持堅韌、並守住內心的寧靜，默默等待風雨過去就好。
 
-            這樣的想法，其實也與許多宗教教義不謀而合。說到底，人們對宗教的需求不就是找尋精神依託與內心平靜嗎，差別只在於宗教當中教徒是向具體的神明祈禱。而思想家則認為思考的理性是出自於人內在超脫本能與慾望的神性，因此祈禱時則是向內，朝自身神性的部分對話與禱告。
+        //     這樣的想法，其實也與許多宗教教義不謀而合。說到底，人們對宗教的需求不就是找尋精神依託與內心平靜嗎，差別只在於宗教當中教徒是向具體的神明祈禱。而思想家則認為思考的理性是出自於人內在超脫本能與慾望的神性，因此祈禱時則是向內，朝自身神性的部分對話與禱告。
 
-            在這本書中便提到了一篇《寧靜禱文──第五號屠宰場》：
+        //     在這本書中便提到了一篇《寧靜禱文──第五號屠宰場》：
 
-            「我祈求能以寧靜的心靈接納無法改變的一切，有勇氣去改變所能改變的一切，並擁有分辨這兩者的智慧。」
+        //     「我祈求能以寧靜的心靈接納無法改變的一切，有勇氣去改變所能改變的一切，並擁有分辨這兩者的智慧。」
 
-            斯多葛學派因為提倡對遭受苦難抱持隱忍與克制，而被一部分人認為是消極逃避的態度，但對自己靈魂深處的神性祈禱，都是希望能克服生命逆境，更加積極的面對人生，並達到靈魂最終的寧靜、無畏與自由。
+        //     斯多葛學派因為提倡對遭受苦難抱持隱忍與克制，而被一部分人認為是消極逃避的態度，但對自己靈魂深處的神性祈禱，都是希望能克服生命逆境，更加積極的面對人生，並達到靈魂最終的寧靜、無畏與自由。
 
-            ──知識無法改變目標的本質，只能改變我們對它的態度（出自本書）。`;
+        //     ──知識無法改變目標的本質，只能改變我們對它的態度（出自本書）。`;
 
-        var bookList = [
-            { Title: '卡片標題', MyFavorite: false, Tags: ['標籤1', '標籤2',], Content: '我是內文範例。', Link: ['https://github.com/l443018/cardify'] },
-            { Title: '零工經濟來了', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
-            { Title: '深度職場力', MyFavorite: true, Tags: ['Book', 'Career',], Content: '', Link: ['https://medium.com/@wang2396/%E8%AE%80%E6%9B%B8%E5%BF%83%E5%BE%97-%E6%B7%B1%E5%BA%A6%E8%81%B7%E5%A0%B4%E5%8A%9B-8a7db71b191f', 'https://www.books.com.tw/products/0010788090',] },
-            // { Title: '做自己的生命設計師', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['https://ieiexyz.wordpress.com/2018/06/03/%E5%A5%BD%E6%9B%B8%E7%AD%86%E8%A8%98%EF%BC%9A%E5%81%9A%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E5%91%BD%E8%A8%AD%E8%A8%88%E5%B8%AB-designing-your-life-%E4%B8%8A/',] },
-            { Title: '跟斯多噶哲學家對話，學習面對生命處境的智慧', MyFavorite: true, Tags: ['Book',], Content: testLongContent, Link: [] },
-            { Title: '刻意練習', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['http://www.yuedu88.com/keyilianxi/11610.html',] },
-            // { Title: '高敏感是種天賦', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
-            // { Title: '高敏感是種天賦II', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
-            { Title: '動機，單純的力量', MyFavorite: false, Tags: ['Book',], Content: '●自主、勝任、歸屬 ・設定大目標之餘也要設定小目標 ・務必了解所有工作環節與大目標的關係 ・定期自我評估績效 ○訂定目標 ○反覆練習 ○持續得到關鍵性回饋 ○針對性地補強弱項 ○要有身心交瘁的心理準備', Link: [] },
-            { Title: '金錢整理', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
-        ];
+        if (localStorage.getItem('Cardify') == null) {
+            var bookList = [
+                { Title: '卡片標題', MyFavorite: false, Tags: ['標籤1', '標籤2',], Content: '我是內文範例。', Link: ['https://github.com/l443018/cardify'] },
+                { Title: '零工經濟來了', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
+                { Title: '深度職場力', MyFavorite: true, Tags: ['Book', 'Career',], Content: '', Link: ['https://medium.com/@wang2396/%E8%AE%80%E6%9B%B8%E5%BF%83%E5%BE%97-%E6%B7%B1%E5%BA%A6%E8%81%B7%E5%A0%B4%E5%8A%9B-8a7db71b191f', 'https://www.books.com.tw/products/0010788090',] },
+                // { Title: '做自己的生命設計師', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['https://ieiexyz.wordpress.com/2018/06/03/%E5%A5%BD%E6%9B%B8%E7%AD%86%E8%A8%98%EF%BC%9A%E5%81%9A%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E5%91%BD%E8%A8%AD%E8%A8%88%E5%B8%AB-designing-your-life-%E4%B8%8A/',] },
+                // { Title: '跟斯多噶哲學家對話，學習面對生命處境的智慧', MyFavorite: true, Tags: ['Book',], Content: testLongContent, Link: [] },
+                { Title: '刻意練習', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['http://www.yuedu88.com/keyilianxi/11610.html',] },
+                // { Title: '高敏感是種天賦', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
+                // { Title: '高敏感是種天賦II', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
+                { Title: '動機，單純的力量', MyFavorite: false, Tags: ['Book',], Content: '●自主、勝任、歸屬 ・設定大目標之餘也要設定小目標 ・務必了解所有工作環節與大目標的關係 ・定期自我評估績效 ○訂定目標 ○反覆練習 ○持續得到關鍵性回饋 ○針對性地補強弱項 ○要有身心交瘁的心理準備  Q: 什麼樣的動機才能夠持久不變？ Q: 人生觀和價值觀能形成什麼樣的動機？  ・第一激勵是生理需求，第二激勵是賞罰，第三激勵則完全發自內在。 ・外在誘因（獎賞與處罰）會奪去人的自主權，如果一件事情有可預期的賞罰，會奪去發自內心的第三激勵，人會被趨利避害的本能控制，失去自我思考時的意志。 ・賞罰像是毒品，同等級的賞罰對人的效力會隨次數減弱，，讓人開始對刺激感到倦怠，需要越來越重的劑量，才能驅動人去做同樣的事情。', Link: [] },
+                { Title: '金錢整理', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
+            ];
+        }
+
+        function loadDataLocalhost() {
+            bookList = JSON.parse(localStorage.getItem('Cardify'));
+            console.log(localStorage.getItem('Cardify111'))
+        };
+        loadDataLocalhost();
 
         new Vue({
             el: '#app',
@@ -302,22 +359,31 @@
                 message: 'Hello World!',
                 searchText: '',
                 bookList: bookList,
-                cardContentLimit: 100,
+                cardContentLimit: 1000,
                 newCardData: { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [] },
             },
             methods: {
                 addNewCard: function () {
                     var title = this.$root.$data.newCardData.Title;
-                    var content = this.$root.$data.newCardData.Content;
                     var myFavorite = this.$root.$data.newCardData.MyFavorite;
+                    var tags = this.$root.$data.newCardData.Tags != "" ? this.$root.$data.newCardData.Tags.split(',') : [];
+                    var content = this.$root.$data.newCardData.Content;
+                    var link = this.$root.$data.newCardData.Link;
                     var lastUpdatedTime = (new Date).toLocaleDateString() + (new Date).toLocaleTimeString();
                     var isEllipsis = this.$root.$data.newCardData.Content.length > this.$root.$data.cardContentLimit;
-                    var tags = this.$root.$data.newCardData.Tags != "" ? this.$root.$data.newCardData.Tags.split(',') : [];
-                    var link = this.$root.$data.newCardData.Link;
                     var newCard = { Title: title, MyFavorite: myFavorite, Tags: tags, Content: content, Link: link };
-                    this.$root.$data.bookList.push(newCard);
+                    // this.$root.$data.bookList.push(newCard);
+                    this.$root.$data.bookList.unshift(newCard);
                     this.$root.$data.newCardData = { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [] };
+                    this.$root.saveDataLocalhost();
                 },
+                saveDataLocalhost: function () {
+                    var data = JSON.stringify(this.$root.$data.bookList);
+                    localStorage.setItem('Cardify', data);
+                },
+                // loadDataLocalhost: function () {
+                //     this.$root.$data.bookList = JSON.parse(localStorage.getItem('Cardify'));
+                // },
                 exportData: function () {
                     var fileName = "Cards.txt";//匯出的檔名
                     var data = JSON.stringify(this.$root.$data.bookList);
