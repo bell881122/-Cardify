@@ -345,13 +345,14 @@
                 { Title: '動機，單純的力量', MyFavorite: false, Tags: ['Book',], Content: '●自主、勝任、歸屬 ・設定大目標之餘也要設定小目標 ・務必了解所有工作環節與大目標的關係 ・定期自我評估績效 ○訂定目標 ○反覆練習 ○持續得到關鍵性回饋 ○針對性地補強弱項 ○要有身心交瘁的心理準備  Q: 什麼樣的動機才能夠持久不變？ Q: 人生觀和價值觀能形成什麼樣的動機？  ・第一激勵是生理需求，第二激勵是賞罰，第三激勵則完全發自內在。 ・外在誘因（獎賞與處罰）會奪去人的自主權，如果一件事情有可預期的賞罰，會奪去發自內心的第三激勵，人會被趨利避害的本能控制，失去自我思考時的意志。 ・賞罰像是毒品，同等級的賞罰對人的效力會隨次數減弱，，讓人開始對刺激感到倦怠，需要越來越重的劑量，才能驅動人去做同樣的事情。', Link: [] },
                 { Title: '金錢整理', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
             ];
+        } else {
+            loadDataLocalhost();
         }
 
         function loadDataLocalhost() {
             bookList = JSON.parse(localStorage.getItem('Cardify'));
             console.log(localStorage.getItem('Cardify111'))
         };
-        loadDataLocalhost();
 
         new Vue({
             el: '#app',
