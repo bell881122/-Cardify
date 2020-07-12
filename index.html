@@ -43,13 +43,10 @@
         .ellipsis {
             width: 100%;
             max-height: 150px;
-            /* max-height: 120px; */
             overflow: hidden;
             /* white-space: nowrap; */
             text-overflow: ellipsis;
-            /* overflow: hidden; */
             position: relative;
-            /* color: #ffff; */
             /* color: linear-gradient(rgba(255,255,255,0),rgba(255,255,255,1)90%); */
         }
 
@@ -60,13 +57,6 @@
         .container {
             position: relative;
         }
-
-        /* .addNewCard {
-            position: absolute;
-            z-index: 10;
-            top: 20%;
-            left: -50px;
-        } */
     </style>
 </head>
 
@@ -79,25 +69,21 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon1">☆</span>
                     </div>
-                    <input type="text" class="form-control col-md-6  col-sm" placeholder="Keyword" aria-label="Username"
-                        aria-describedby="basic-addon1" v-model="searchText">
+                    <input type="text" class="form-control col-md-6  col-sm" placeholder="Keyword" aria-label="Username" aria-describedby="basic-addon1" v-model="searchText">
                 </div>
                 <button type="button" class="btn  btn-outline-info btn-sm mr-2" @click="exportData">匯出</button>
                 <button type="button" class="btn  btn-outline-info btn-sm mr-2" @click="importData">匯入</button>
-                <button type="button" class="btn btn-info rounded-circle" data-toggle="modal"
-                    data-target="#exampleModal">
+                <button type="button" class="btn btn-info rounded-circle" data-toggle="modal" data-target="#exampleModal">
                     <h5>＋</h5>
                 </button>
             </div>
             <div class="card-columns">
-                <card-component class="shadow-sm" :card-data="bookList[i]" v-for="(item, i) in bookList.length"
-                    :key="item"></card-component>
+                <card-component class="shadow-sm" :card-data="bookList[i]" v-for="(item, i) in bookList.length" :key="item"></card-component>
             </div>
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-            aria-hidden="true">
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -107,31 +93,25 @@
                         <div class="card-body">
                             <div class="d-flex align-items-center">
                                 <div>
-                                    <input class="h2 w-100" type="text" v-model="newCardData.Title"
-                                        placeholder="輸入標題...">
+                                    <input class="h2 w-100" type="text" v-model="newCardData.Title" placeholder="輸入標題...">
                                 </div>
                                 <div class="ml-auto">
-                                    <span style="cursor:pointer" @click="changeFavorite" v-if="!newCardData.MyFavorite"
-                                        class="text-decoration-none h5">☆</span>
-                                    <span style="cursor:pointer" @click="changeFavorite" v-if="newCardData.MyFavorite"
-                                        class="text-decoration-none h5">★</span>
+                                    <span style="cursor:pointer" @click="changeFavorite" v-if="!newCardData.MyFavorite" class="text-decoration-none h5">☆</span>
+                                    <span style="cursor:pointer" @click="changeFavorite" v-if="newCardData.MyFavorite" class="text-decoration-none h5">★</span>
                                 </div>
                             </div>
                             <div>
                                 <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>
-                                <input type="text" class="form-control" aria-label="Sizing example input"
-                                    aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Tags">
+                                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Tags">
                             </div>
                             <div>
-                                <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4"
-                                    v-model="newCardData.Content" placeholder="添加描述..."></textarea>
+                                <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-model="newCardData.Content" placeholder="添加描述..."></textarea>
                             </div>
                             <div class="input-group input-group-sm mb-3 mt-2" v-for="j in newCardData.Link.length + 1">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-sm">連結{{j}}</span>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Sizing example input"
-                                    aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Link[j-1]">
+                                <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="newCardData.Link[j-1]">
                             </div>
                         </div>
                     </div>
@@ -154,21 +134,21 @@
                         <input class="h2 w-100" v-if="editMode" type="text" v-model="cardData.Title">
                     </div>
                     <div class="ml-auto" v-if="!editMode">
-                        <span style="cursor:pointer" @click="changeFavorite" v-if="!cardData.MyFavorite"
-                            class="text-decoration-none h5">☆</span>
-                        <span style="cursor:pointer" @click="changeFavorite" v-if="cardData.MyFavorite"
-                            class="text-decoration-none h5">★</span>
+                        <span style="cursor:pointer" @click="changeFavorite" v-if="!cardData.MyFavorite" class="text-decoration-none h5">☆</span>
+                        <span style="cursor:pointer" @click="changeFavorite" v-if="cardData.MyFavorite" class="text-decoration-none h5">★</span>
                     </div>
                 </div>
                 <!-- Tags -->
                 <div>
-                    <span class="badge badge-info mr-1" v-if="!editMode" v-for="j in cardData.Tags.length">{{cardData.Tags[j-1]}}</span>
+                    <span class="badge badge-info mr-1" v-if="!editMode"
+                        v-for="j in cardData.Tags.length">{{cardData.Tags[j-1]}}</span>
                     <div v-if="editMode">
-                        <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>                        
+                        <small class="form-text text-muted">標籤請用半形逗號「,」分隔</small>
                         <input type="text" class="form-control" aria-label="Sizing example input"
-                        aria-describedby="inputGroup-sizing-sm" v-model="Tags">
+                            aria-describedby="inputGroup-sizing-sm" v-model="Tags">
                     </div>
                 </div>
+                <!-- Content -->
                 <div>
                     <div :class="{'ellipsis':isEllipsis }" v-if="!editMode && cardData.Content != ''">
                         <p class="card-text w-100">
@@ -176,32 +156,32 @@
                         </p>
                         <div :class="{'ellipsisMask':isEllipsis }"></div>
                     </div>
-                    <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-if="editMode"
-                        v-model="cardData.Content" placeholder="添加描述..."></textarea>
+                    <textarea class="form-control mt-2" id="exampleFormControlTextarea1" rows="4" v-if="editMode" v-model="cardData.Content" placeholder="添加描述..."></textarea>
                 </div>
+                <!-- Link -->
                 <a v-if="!editMode" class="mr-2 text-info" :href="cardData.Link[j-1]" target="_blank"
                     v-for="j in cardData.Link.length"><small>連結{{j}}</small></a>
                 <div class="input-group input-group-sm mb-3 mt-2" v-if="editMode" v-for="j in cardData.Link.length + 1">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id="inputGroup-sizing-sm">連結{{j}}</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Sizing example input"
-                        aria-describedby="inputGroup-sizing-sm" v-model="cardData.Link[j-1]">
+                    <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" v-model="cardData.Link[j-1]">
                 </div>
+                <!-- Footer -->
                 <footer class="footer">
                     <small class="text-muted" v-if="!editMode">
-                        Last updated
-                        <cite title="Source Title"> {{lastUpdatedTime}}</cite>
+                        Last updated<cite title="Source Title"> {{lastUpdatedTime}}</cite>
                     </small>
                 </footer>
                 <div class="d-flex">
-                    <a class="ml-auto" v-if="!editMode" href="#" @click.prevent="turnToEdit"><small
-                            class="text-muted">編輯</small></a>
-                    <a class=" ml-auto" v-if="editMode" href="#" @click.prevent="doneEdit"><small
-                            class="text-primary">更新</small></a>
+                    <div class="ml-auto">
+                        <a v-if="!editMode" href="#" @click.prevent="deleteCard"><small class="text-danger">刪除</small></a>
+                        <a class="ml-auto" v-if="!editMode" href="#" @click.prevent="turnToEdit"><small class="text-muted">編輯</small></a>
+                    </div>
+                    <a class=" ml-auto" v-if="editMode" href="#" @click.prevent="doneEdit"><small class="text-info">更新</small></a>
                 </div>
             </div>
-        </div>     
+        </div>
     </script>
 
     <script>
@@ -215,7 +195,6 @@
                     lastUpdatedTime: (new Date).toLocaleDateString() + (new Date).toLocaleTimeString(),
                     Tags: this.cardData.Tags.join(', '),
                     newcardData: { Title: '', MyFavorite: false, Tags: [], Content: '', Link: [] },
-
                 }
             },
             // mounted: function () {
@@ -242,6 +221,14 @@
                 changeFavorite: function () {
                     this.cardData.MyFavorite = !this.cardData.MyFavorite;
                 },
+                deleteCard: function () {
+                    console.log(this.$root.$data.bookList);
+                    var index = this.$vnode.data.key - 1;
+                    console.log(index);
+                    this.$root.$data.bookList.splice(index, 1);
+                    console.log(this.$root.$data.bookList);
+                },
+
                 // getLinkTitle: function () {
                 //     // var url = this.cardData.Link;
                 //     var url = "http://127.0.0.1:5500/template/cardifyTest.html";
@@ -258,7 +245,6 @@
                 // },
             }
         })
-
 
         var testLongContent =
             `察覺能與不能之事，
