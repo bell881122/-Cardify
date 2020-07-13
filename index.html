@@ -102,8 +102,7 @@
                 </button>
             </div>
             <div class="card-columns">
-                <card-component :card-data="bookList[i]" v-for="(item, i) in bookList.length" :key="item">
-                </card-component>
+                <card-component :card-data="bookList[i]" v-for="(item, i) in bookList.length" :key="item"></card-component>
             </div>
         </div>
 
@@ -205,7 +204,7 @@
                     <footer class="footer">
                         <div class="d-flex align-items-end">
                             <small class="text-muted" v-if="!editMode">
-                             Last updated <cite title="Source Title"> {{lastUpdatedTime}}</cite>
+                             Last updated <cite title="Source Title"> {{cardData.LastUpdatedTime}}</cite>
                             </small>
                             <div class="ml-auto">
                                 <a v-if="!editMode" href="#" data-toggle="modal" data-target=".bd-example-modal-sm"><small class="text-danger" >刪除</small></a>
@@ -242,9 +241,8 @@
                 return {
                     editMode: false,
                     isEllipsis: this.cardData.Content.length > this.$root.$data.cardContentLimit,
-                    lastUpdatedTime: (new Date).toLocaleDateString() + (new Date).toLocaleTimeString(),
+                    // lastUpdatedTime: this.cardData.LastUpdatedTime != "" ? this.cardData.LastUpdatedTime : ((new Date).toLocaleDateString() + (new Date).toLocaleTimeString()),
                     Tags: this.cardData.Tags.join(', '),
-                    newcardData: { Title: '', MyFavorite: false, Tags: [], Content: '', Link: [] },
                 }
             },
             // mounted: function () {
@@ -264,17 +262,18 @@
                 },
                 doneEdit: function () {
                     this.editMode = false;
-                    this.lastUpdatedTime = (new Date).toLocaleDateString() + (new Date).toLocaleTimeString();
+                    this.cardData.LastUpdatedTime = (new Date).toLocaleDateString() + (new Date).toLocaleTimeString();
                     this.isEllipsis = this.cardData.Content.length > this.$root.$data.cardContentLimit;
                     this.cardData.Tags = this.Tags.split(',');
                     this.$root.saveDataLocalhost();
                 },
                 changeFavorite: function () {
                     this.cardData.MyFavorite = !this.cardData.MyFavorite;
+                    this.$root.saveDataLocalhost();
                 },
                 deleteCard: function () {
                     // console.log(this.$root.$data.bookList);
-                    var index = this.$vnode.data.key;
+                    var index = this.$vnode.data.key - 1;
                     console.log(index);
                     this.$root.$data.bookList.splice(index, 1);
                     console.log(this.$root.$data.bookList);
@@ -334,16 +333,16 @@
 
         if (localStorage.getItem('Cardify') == null) {
             var bookList = [
-                { Title: '卡片標題', MyFavorite: false, Tags: ['標籤1', '標籤2',], Content: '我是內文範例。', Link: ['https://github.com/l443018/cardify'] },
-                { Title: '零工經濟來了', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
-                { Title: '深度職場力', MyFavorite: true, Tags: ['Book', 'Career',], Content: '', Link: ['https://medium.com/@wang2396/%E8%AE%80%E6%9B%B8%E5%BF%83%E5%BE%97-%E6%B7%B1%E5%BA%A6%E8%81%B7%E5%A0%B4%E5%8A%9B-8a7db71b191f', 'https://www.books.com.tw/products/0010788090',] },
-                // { Title: '做自己的生命設計師', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['https://ieiexyz.wordpress.com/2018/06/03/%E5%A5%BD%E6%9B%B8%E7%AD%86%E8%A8%98%EF%BC%9A%E5%81%9A%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E5%91%BD%E8%A8%AD%E8%A8%88%E5%B8%AB-designing-your-life-%E4%B8%8A/',] },
-                // { Title: '跟斯多噶哲學家對話，學習面對生命處境的智慧', MyFavorite: true, Tags: ['Book',], Content: testLongContent, Link: [] },
-                { Title: '刻意練習', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['http://www.yuedu88.com/keyilianxi/11610.html',] },
-                // { Title: '高敏感是種天賦', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
-                // { Title: '高敏感是種天賦II', MyFavorite: false, Tags: ['Book',], Content: '', Link: [] },
-                { Title: '動機，單純的力量', MyFavorite: false, Tags: ['Book',], Content: '●自主、勝任、歸屬 ・設定大目標之餘也要設定小目標 ・務必了解所有工作環節與大目標的關係 ・定期自我評估績效 ○訂定目標 ○反覆練習 ○持續得到關鍵性回饋 ○針對性地補強弱項 ○要有身心交瘁的心理準備  Q: 什麼樣的動機才能夠持久不變？ Q: 人生觀和價值觀能形成什麼樣的動機？  ・第一激勵是生理需求，第二激勵是賞罰，第三激勵則完全發自內在。 ・外在誘因（獎賞與處罰）會奪去人的自主權，如果一件事情有可預期的賞罰，會奪去發自內心的第三激勵，人會被趨利避害的本能控制，失去自我思考時的意志。 ・賞罰像是毒品，同等級的賞罰對人的效力會隨次數減弱，，讓人開始對刺激感到倦怠，需要越來越重的劑量，才能驅動人去做同樣的事情。', Link: [] },
-                { Title: '金錢整理', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [] },
+                { Title: '卡片標題', MyFavorite: false, Tags: ['標籤1', '標籤2',], Content: '我是內文範例。', Link: ['https://github.com/l443018/cardify'], LastUpdatedTime: (new Date).toLocaleDateString() + (new Date).toLocaleTimeString() },
+                // { Title: '零工經濟來了', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [], LastUpdatedTime: '' },
+                // { Title: '深度職場力', MyFavorite: true, Tags: ['Book', 'Career',], Content: '', Link: ['https://medium.com/@wang2396/%E8%AE%80%E6%9B%B8%E5%BF%83%E5%BE%97-%E6%B7%B1%E5%BA%A6%E8%81%B7%E5%A0%B4%E5%8A%9B-8a7db71b191f', 'https://www.books.com.tw/products/0010788090',], LastUpdatedTime: '' },
+                // // { Title: '做自己的生命設計師', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['https://ieiexyz.wordpress.com/2018/06/03/%E5%A5%BD%E6%9B%B8%E7%AD%86%E8%A8%98%EF%BC%9A%E5%81%9A%E8%87%AA%E5%B7%B1%E7%9A%84%E7%94%9F%E5%91%BD%E8%A8%AD%E8%A8%88%E5%B8%AB-designing-your-life-%E4%B8%8A/',],LastUpdatedTime:'' },
+                // // { Title: '跟斯多噶哲學家對話，學習面對生命處境的智慧', MyFavorite: true, Tags: ['Book',], Content: testLongContent, Link: [],LastUpdatedTime:'' },
+                // { Title: '刻意練習', MyFavorite: false, Tags: ['Book',], Content: '', Link: ['http://www.yuedu88.com/keyilianxi/11610.html',], LastUpdatedTime: '' },
+                // // { Title: '高敏感是種天賦', MyFavorite: false, Tags: ['Book',], Content: '', Link: [],LastUpdatedTime:'' },
+                // // { Title: '高敏感是種天賦II', MyFavorite: false, Tags: ['Book',], Content: '', Link: [],LastUpdatedTime:'' },
+                // { Title: '動機，單純的力量', MyFavorite: false, Tags: ['Book',], Content: '●自主、勝任、歸屬 ・設定大目標之餘也要設定小目標 ・務必了解所有工作環節與大目標的關係 ・定期自我評估績效 ○訂定目標 ○反覆練習 ○持續得到關鍵性回饋 ○針對性地補強弱項 ○要有身心交瘁的心理準備  Q: 什麼樣的動機才能夠持久不變？ Q: 人生觀和價值觀能形成什麼樣的動機？  ・第一激勵是生理需求，第二激勵是賞罰，第三激勵則完全發自內在。 ・外在誘因（獎賞與處罰）會奪去人的自主權，如果一件事情有可預期的賞罰，會奪去發自內心的第三激勵，人會被趨利避害的本能控制，失去自我思考時的意志。 ・賞罰像是毒品，同等級的賞罰對人的效力會隨次數減弱，，讓人開始對刺激感到倦怠，需要越來越重的劑量，才能驅動人去做同樣的事情。', Link: [], LastUpdatedTime: '' },
+                // { Title: '金錢整理', MyFavorite: false, Tags: ['Book', 'Money management',], Content: '', Link: [], LastUpdatedTime: '' },
             ];
         } else {
             loadDataLocalhost();
@@ -362,7 +361,7 @@
                 searchText: '',
                 bookList: bookList,
                 cardContentLimit: 1000,
-                newCardData: { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [] },
+                newCardData: { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [], LastUpdatedTime: '' },
             },
             methods: {
                 addNewCard: function () {
@@ -373,10 +372,10 @@
                     var link = this.$root.$data.newCardData.Link;
                     var lastUpdatedTime = (new Date).toLocaleDateString() + (new Date).toLocaleTimeString();
                     var isEllipsis = this.$root.$data.newCardData.Content.length > this.$root.$data.cardContentLimit;
-                    var newCard = { Title: title, MyFavorite: myFavorite, Tags: tags, Content: content, Link: link };
+                    var newCard = { Title: title, MyFavorite: myFavorite, Tags: tags, Content: content, Link: link, LastUpdatedTime: lastUpdatedTime};
                     // this.$root.$data.bookList.push(newCard);
                     this.$root.$data.bookList.unshift(newCard);
-                    this.$root.$data.newCardData = { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [] };
+                    this.$root.$data.newCardData = { Title: '標題', MyFavorite: false, Tags: [], Content: '', Link: [], LastUpdatedTime: '' };
                     this.$root.saveDataLocalhost();
                 },
                 saveDataLocalhost: function () {
