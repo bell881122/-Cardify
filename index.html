@@ -274,7 +274,7 @@
                 },
                 deleteCard: function () {
                     // console.log(this.$root.$data.bookList);
-                    var index = this.$vnode.data.key - 1;
+                    var index = this.$vnode.data.key;
                     console.log(index);
                     this.$root.$data.bookList.splice(index, 1);
                     console.log(this.$root.$data.bookList);
@@ -351,8 +351,9 @@
 
         function loadDataLocalhost() {
             bookList = JSON.parse(localStorage.getItem('Cardify'));
-            console.log(localStorage.getItem('Cardify111'))
         };
+
+        // localStorage.removeItem('Cardify');
 
         new Vue({
             el: '#app',
